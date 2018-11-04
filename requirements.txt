@@ -1,0 +1,12 @@
+click
+pyzmq
+pyephem
+numpy
+pyfits==3.3
+flask
+importlib
+pyyaml
+pygame
+configobj
+pytest
+
