@@ -1,0 +1,1 @@
+Search.setIndex({envversion:47,filenames:["index"],objects:{},objnames:{},objtypes:{},terms:{asteroid:0,com:0,copyright:0,designevo:0,detect:0,document:0,github:0,gpl3:0,html:0,http:0,index:0,logo:0,made:0,move:0,nacho:0,nachoplu:0,nov:0,object:0,other:0,progress:0,tbd:0,tool:0,work:0,www:0},titles:["Urania"],titleterms:{inform:0,introduct:0,licens:0,technic:0,urania:0}})
