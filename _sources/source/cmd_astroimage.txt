@@ -1,0 +1,2 @@
+[Module: urania.base.astroimage]
+
