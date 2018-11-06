@@ -1,0 +1,5 @@
+CONV NORM
+# 9x9 convolution mask of a gaussian PSF with FWHM = 5.0 pixels.
+0. 0. 0.
+0. 1. 0.
+0. 0. 0.

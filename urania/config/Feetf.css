@@ -1,0 +1,171 @@
+
+body 
+{
+color:#aaaaaa;
+background: #000000; 
+}    
+
+img
+{
+max-width: 1000px;
+max-height:1000px;
+border:1px solid #AAaaaa;
+}
+
+hr
+{
+color: #000;
+background-color: #f00;
+width: 40%;
+height: 1px;
+}
+
+table.fastmover {
+	margin:20px;padding:5px;
+	border:1px solid #440000;
+	text-align:center;
+	page-break-inside:avoid;
+	page-break-after:always;
+}
+
+table.fastmover  td{
+	margin:20px;padding:5px;
+	width:250;
+	vertical-align:middle;
+	border:0px solid #aaaaaa;
+	font-size:10px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+
+table.moverinfo {
+	margin:0px;padding:0px;
+	border:0px solid #aaaaaa;
+	text-align:center
+}
+
+table.moverinfo  td{
+	vertical-align:middle;
+	border:1px solid #AAaaaa;
+	font-size:16px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+
+table.moverinfo td::before {
+	content: attr(label) ": ";
+}
+
+table.moverinfo  td[label="MPCOBS"]  {
+	white-space:pre-wrap;
+	font-size:12px;
+	color:#BBBBBB;
+}
+
+table.moverinfo  td[label="MPCOBS"]   a{
+	font-size:12px;
+	color:#BBBBBB;
+}
+
+
+table.moverinfo  td[label="IMAGE"] a{
+	color:#8888BB;
+}
+
+table.moverinfo  td[label="SPEED"] a{
+	color:#8888BB;
+}
+
+table.moverimage {
+	margin:0px;padding:0px;
+	border:0px solid #aaaaaa;
+	text-align:center
+}
+
+
+table.moverimage  td{
+
+	vertical-align:middle;
+	border:0px solid #AAaaaa;
+	font-size:12px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+
+table.moverimage  img {
+	width:250;
+}
+
+table.cropiesimage {
+	margin:0px;padding:0px;
+	border:0px solid #aaaaaa;
+	text-align:center
+}
+
+table.cropiesimage  td{
+	margin:0px;padding:0px;
+	vertical-align:middle;
+	border:0px solid #AAaaaa;
+	font-size:12px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+table.cropiesimage  img {
+	border:0px solid #AAaaaa;
+	width:83;
+}
+
+table.satinfo td::before {
+	content: attr(label) ": ";
+}
+
+table.satdata {
+	border:0px solid #AAAAAA;
+	text-align:center	
+}
+
+table.satdata  td{
+	vertical-align:middle;
+	border:0px solid #AAaaaa;
+	font-size:12px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+
+table.satinfo {
+	border:1px solid #AAAAAA;
+	text-align:center	
+}
+
+
+
+table.satinfo  td{
+	margin:1px;padding:1px;
+	vertical-align:middle;
+	border:0px solid #AAaaaa;
+	font-size:12px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+}
+
+table.animation  td{
+	margin:1px;padding:1px;
+	vertical-align:middle;
+	border:1px solid #AAaaaa;
+	font-size:12px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#AAAAAA;
+	text-align:center		
+}
+
+table.animation  #animation{
+	width:1250;
+}
+

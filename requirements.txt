@@ -1,12 +1,12 @@
 click
 pyzmq
 pyephem
+simplejson
 numpy
 pyfits==3.3
 flask
 importlib
 pyyaml
-pygame
 configobj
 pytest
 

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>Slow mover Tycho Pages</title>
+  <link rel="stylesheet" type="text/css" media="all" href="colorbox/slow.css">
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <meta http-equiv="Cache-control" content="public">
+</head>
+
+<body>
+<table class='slowmover'>
+<tr>
+<td id='croppy'>
+</td>
+</tr>
+<tr>
+<td id='asteroidID' class='asteroidID'>
+</td>
+</tr>
+<tr>
+<td id='mainparams' class='mainparams'>
+</td>
+</tr>
+<tr>
+<td id='MPCOBS' class='mpcobs'>
+</td>
+</tr>
+<tr>
+<td id='frame' class='link'>
+</td>
+</tr>
+</table>
+
+
+<script type="text/javascript">
+$( document ).ready(function() {
+
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+frame=$.urlParam('frame')
+date=$.urlParam('date')
+asteroid=$.urlParam('asteroid')
+texto="<a href='blinker.html?date="+date+"&frame="+frame+"'>"+frame+"</a>"
+$("#frame").html(texto)
+var json_file=date+"/slow_animations/"+frame+".json"
+
+$.get( json_file, function( data ) {
+	for (i in data.SLOWMOVERS) {
+	slowmover=data.SLOWMOVERS[i]
+	if (slowmover.ID==asteroid) {
+		if (!slowmover.KNOW) {
+			  knowclass="mpc_unknow"
+			  KNOWNESS="UNKNOW"
+		} else {
+			  knowclass="mpc_know"
+			  KNOWNESS="KNOW"
+		}
+		title=slowmover.ID
+		mainParameters="MAG:"+slowmover.MAG+" SP:"+slowmover.SPEED+" OC:"+slowmover.OC+" PA:"+slowmover.PA+" R:"+slowmover.R+" "+KNOWNESS
+// TODO. calculate MJD.ra.dec        
+//   propagator="<a href='../../propagator.html?date="+MJD+"speed="+slowmover.SPEED+"&pa="+slowmover.PA+"&id="+title+"&ra="+ra+"&dec="+dec+"'>"+mainParameters+"</a>
+		mpcOBS=slowmover.MPCOBS
+		gifname=date+"/slow_animations/animate-"+asteroid+".gif"
+		texto="<img class='croppy "+knowclass+"' src='"+gifname+"' onerror=this.src='colorbox/futurama.gif';>"
+		$("#croppy").append(texto)
+		$("#asteroidID").append(title)
+		$("#mainparams").append(mainParameters)
+		$("#MPCOBS").append(mpcOBS)
+ 	}
+	}
+});
+
+});
+</script>
+</body>
+</html>

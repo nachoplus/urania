@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<link rel="StyleSheet" type="text/css" href="style.css" />
+
+
+
+<script type="text/javascript" src="scripts/parse.js"></script>
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+
+</head>
+<body id="body" >
+	<textarea id="text"></textarea>
+<div class="output"></div>
+
+</body>
+<script>
+    setInterval( function(){ updatedata();}, 10000);
+    $("#text").hide()
+
+    function updatedata(){
+    //$(".heartbeat").append(".")
+    $.ajax({
+    // the URL for the request
+    url: "../stat_slowmover.json",
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {
+		$("#text").text(JSON.stringify(data))
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+ 
+    }
+    });
+    	doParse();
+    };
+    updatedata();
+</script>
+</html>

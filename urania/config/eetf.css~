@@ -1,0 +1,116 @@
+<style type="text/css">
+
+
+body 
+{
+color:#aaaaaa;
+background: #222222; 
+}    
+
+
+.moverTable table{
+	margin:20px;padding:0px;
+	box-shadow: 10px 10px 5px #888888;
+	border:1px solid #000000;
+	background-color:#000000;
+}
+
+.moverTable table td{
+	width:150;
+	vertical-align:middle;
+	
+	background-color:#000000;
+
+	border:0px solid #000000;
+	border-width:1px 1px 1px 1px;
+	text-align:left;
+	font-size:10px;
+	font-family:Arial;
+	font-weight:normal;
+	color:#000000;
+}
+
+.moverTable table tr:first-child td{
+		background:-o-linear-gradient(bottom, #cccccc 5%, #cccccc 100%);	background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #cccccc), color-stop(1, #cccccc) );
+	background:-moz-linear-gradient( center top, #cccccc 5%, #cccccc 100% );
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr="#cccccc", endColorstr="#cccccc");	background: -o-linear-gradient(top,#cccccc,cccccc);
+
+	background-color:#cccccc;
+	border:0px solid #000000;
+	text-align:center;
+	border-width:0px 0px 0px 0px;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:bold;
+	color:#000000;
+}
+
+.moverTable table tr:first-child td:first-child{
+	background-color:#cccccc;
+	border:0px solid #000000;
+	text-align:center;
+	border-width:0px 0px 0px 0px;
+	font-size:40px;
+	font-family:Arial;
+	font-weight:bold;
+	color:#000000;
+}
+
+.mag table{
+	margin:0px;padding:0px ;
+	box-shadow: 0px 0px 0px #888888;
+	border:0px solid #000000;
+}
+
+.moverTable .mag td {
+	background-color:#cccccc;
+	border:1px solid #000000;
+	text-align:center;
+	padding:1px;
+	border-width:0px 0px 0px 0px !important;
+	font-size:10px !important;
+	font-family:Arial;
+}
+
+
+
+.thumbnail{
+position: relative;
+z-index: 0;
+}
+
+.thumbnail:hover{
+background-color: transparent;
+z-index: 50;
+}
+
+.thumbnail span{ /*CSS for enlarged image*/
+position: absolute;
+background-color: white;
+padding: 5px;
+left: -1000px;
+border: 2px black;
+visibility: hidden;
+color: black;
+text-decoration: none;
+}
+
+.thumbnail span img{ /*CSS for enlarged image*/
+border: 2px black;
+padding: 2px;
+}
+
+.thumbnail:hover span{ /*CSS for enlarged image on hover*/
+visibility: visible;
+box-shadow: 10px 10px 5px #888888;
+border-width: 1px 1px 1px 1px black;
+top: -60px;
+left: 60px; /*position where enlarged image should offset horizontally */
+
+}
+
+
+
+
+
+</style>

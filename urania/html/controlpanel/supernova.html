@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en-US">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html">
+  <title>LA SAGRA SLOWMOVERS: Tycho Pages </title>
+  <link rel="stylesheet" href="colorbox/screen.css" media="screen"/>
+  <link rel="stylesheet" href="colorbox/colorbox.css" />
+  <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+  <script src="colorbox/jquery.colorbox.js"></script>
+  <meta http-equiv="Cache-control" content="public">
+</head>
+
+<body>
+  
+  <div id="w">
+    <div id="content">
+      <h3 id='header'>LA SAGRA SLOWMOVERS: Tycho Pages </h3>
+      <h3 id='telescope'>SHOWING ALL TELESCOPES</h3>
+      <h3 id='speed'>NOT SPEED FILTER</h3>
+<td>
+<table class="menu">
+<tr>
+<td class="menu"><a class='menu controlpanel' href='javascript:void(0)'>ControlPanel</a></td>
+<td class="menu"><a class='menu knowmovers' href='javascript:void(0)'>KnowMovers</a></td><td><div id='knowsCounter'>0</div></td>
+<td class="menu"><a class='menu unknowmovers' href='javascript:void(0)'>UnKnowMovers</a></td><td><div id='unknowsCounter'>0</div></td>
+</tr>
+</table>
+
+<br>
+<input id="SHOW_MPC" type="checkbox" value="Show know MPCs" name="SHOW_MPC" >Show know MPCs</input>
+<input id="SHOW_UNKNOWS" type="checkbox" value="Show unknow" name="SHOW_UNKNOWS" checked>Show unknows</input>
+<input id="SHOW_R" type="checkbox" value="Show only R<0.5" name="SHOW_R">Show only RMS<=0.5</input>
+</td>
+<div id='test'></div>
+      <div id="thumbnails">
+
+
+
+      </div>
+    </div><!-- @end #content -->
+  </div><!-- @end #w -->
+
+<script type="text/javascript">
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+frame=$.urlParam('frame')
+date=$.urlParam('date')
+telescope=$.urlParam('telescope')
+
+minSP=$.urlParam('minSP')
+maxSP=$.urlParam('maxSP')
+
+
+if (minSP && maxSP) {
+	$('#speed').text('')
+	$('#speed').append('minSP:'+minSP)
+	$('#speed').append(' maxSP:'+maxSP)
+} else {
+	if (minSP) {
+		$('#speed').text('')
+		$('#speed').append('minSP:'+minSP)
+	}
+
+	if (maxSP) {
+		$('#speed').text('')
+		$('#speed').append('maxSP:'+maxSP)
+	}
+
+}
+
+if (!minSP) {
+	minSP=0
+}
+
+if (!maxSP) {
+	maxSP=1000
+}
+
+
+strSearch= new RegExp('')
+if (telescope) {
+	switch (telescope) {
+    		case "CENTU1":
+		strSearch= new RegExp('...[A,X]')
+		$("#telescope").text("TELESCOPE: CENTU1")
+		break;
+
+    		case "CENTU2":
+		strSearch= new RegExp('...[B,Y]')
+		$("#telescope").text("TELESCOPE: CENTU2")
+		break;
+
+    		case "CENTU3":
+		strSearch= new RegExp('...[C,Z]')
+		$("#telescope").text("TELESCOPE: CENTU3")
+		break;
+
+	}
+}
+$("#header").append(date)
+if (date==null) {
+	var day=new Date();
+	day.setHours(day.getHours()-20)
+	//date=day.getFullYear()+"-"+String('0'+Number(day.getMonth())+1).slice(-2)+"-"+('0'+day.getDate()).slice(-2)
+	date=day.getFullYear()+"-"+('0'+Number(Number(day.getMonth())+1)).slice(-2)+"-"+('0'+day.getDate()).slice(-2)
+	date=date.substring(2,10)
+	//date=day
+	window.open(window.location.pathname+"?date="+date,"_self")
+	//$("#date").text(date)
+}
+
+$( ":checkbox" ).click(function(){
+	show_checked()
+}
+)
+
+$('.controlpanel').click(function(){
+	window.open("controlpanel.html?date="+date,"_self")
+});
+
+$('.knowmovers').click(function(){
+	window.open(date+"/knowmovers.mpcobs","_self")
+});
+
+$('.unknowmovers').click(function(){
+	window.open(date+"/unknowmovers.mpcobs","_self")
+});
+
+//$('.asteroid').click(function(){
+//	this.css("color","#f00000");
+//});
+
+setInterval( function(){ updatedata();}, 15000);
+
+updateSlowMovers();
+
+var knowN=0;
+var unknowN=0;
+
+function updatedata(){
+	updateSlowMovers();
+	show_checked();
+}
+
+    function updateSlowMovers(){
+    $.ajax({
+    // the URL for the request
+    url: date+"/galaxies/supernova.json",
+    //url: "kk.json",	
+
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {	
+	for (i in data) {
+		galaxy=i
+		da=data[i]
+  		if ($("#"+galaxy).length){
+		   	//Horray you have the row you specified.	
+			//console.log(response.FRAME+" EXIST")
+		} else {
+		texto="<hr><h3>"+galaxy+" "+da.candidate+"</h3>"
+		$("#thumbnails" ).append(texto)
+		$("#thumbnails" ).append("<div id='"+galaxy+"' /div>")
+
+				if (!da.candidate) {
+				  knowclass="mpc_unknow"
+				  KNOWNESS="UNKNOW"
+				  unknowN=unknowN+1;
+				} else {
+				  knowclass="mpc_know"
+				  KNOWNESS="KNOW"
+				  knowN=knowN+1;
+				}
+		gifname=date+"/galaxies/"+galaxy+".png"
+		texto="<img class='croppy img' src='"+gifname+"' onerror=this.src='colorbox/futurama.gif';>"
+		gifname=date+"/galaxies/"+galaxy+".png"
+		texto=texto+"<a class='asteroid_link '><img class='croppy dss' src='"+gifname+"' onerror=this.src='colorbox/futurama.gif';></a>"
+		texto="<div class='window "+knowclass+"'>"
+		texto=texto+"<tr><td><a class='asteroid_link "
+		texto=texto+ "'><img  width='100px' height='100px' class='asteroid' src='" 
+		texto=texto+gifname+"' onerror=this.src='colorbox/bender.png';></a></td></tr>"
+		texto=texto+"<tr><td><div class='asteroidlabel' >"+"</div></td></tr></div>"
+		//texto=texto+'<input id="'+title+'" type="checkbox" >To Trash</input>'
+		$("#"+galaxy ).append(texto);
+
+		gifname=date+"/galaxies/"+galaxy+".dss.png"
+		texto=texto+"<a class='asteroid_link '><img class='croppy dss' src='"+gifname+"' onerror=this.src='colorbox/futurama.gif';></a>"
+		texto="<div class='window "+knowclass+"'>"
+		texto=texto+"<tr><td><a class='asteroid_link "
+		texto=texto+ "'><img  width='100px' height='100px' class='asteroid' src='" 
+		texto=texto+gifname+"' onerror=this.src='colorbox/bender.png';></a></td></tr>"
+		texto=texto+"<tr><td><div class='asteroidlabel' >"+"</div></td></tr></div>"
+		//texto=texto+'<input id="'+title+'" type="checkbox" >To Trash</input>'
+		$("#"+galaxy ).append(texto);
+		}
+	}
+
+	dummy();
+        show_checked();
+	$("#unknowsCounter").html(unknowN);	
+	$("#knowsCounter").html(knowN);	
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+ 
+    }
+    });
+    };
+
+function dummy() {
+	$('.asteroid_link').colorbox({transition:"fade",innerWidth:'600px',innerHeight:'600px',scalePhotos:'true',title:function () {
+        return "<div class='mpcobs'>"+this.getAttribute('mpcobs')+"</div><div class='colorbox_title'>"+this.title+" "+this.getAttribute('mainparams')+"</div>";
+        }});
+}
+
+function dummyKK() {
+	$('.asteroid_link').colorbox({iframe:true, width:"600px", height:"730px"});
+}
+
+function show_checked() {
+	$(".window").hide()
+	if ($("#SHOW_R").is(":checked")) {
+
+		if ($("#SHOW_MPC").is(":checked")) {
+			$(".mpc_know.mpc_R").show()
+	  	} 
+		if ($("#SHOW_UNKNOWS").is(":checked")) {
+			$(".mpc_unknow.mpc_R").show()
+	  	} 	
+
+  	} else {
+		if ($("#SHOW_MPC").is(":checked")) {
+			$(".mpc_know").show()
+	  	} 	
+		if ($("#SHOW_UNKNOWS").is(":checked")) {
+			$(".mpc_unknow").show()
+	  	} 	
+	}	
+
+}
+
+
+
+</script>
+</body>
+</html>
+
+

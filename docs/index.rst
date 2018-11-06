@@ -1,8 +1,13 @@
-.. termiteOS documentation master file, created by
-   sphinx-quickstart on Tue Jul 24 23:07:52 2018.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. URANIA documentation master file.
 
+
+.. figure:: ./images/urania.jpeg
+    :width: 400px
+    :align: center
+    :height: 400px
+    :alt: URANIA
+
+    The muse of astronomy
 
 .. include:: ../README.rst
 
@@ -11,7 +16,7 @@ Technical information
 .. toctree::
    :maxdepth: 1
 
-   source/launcher.rst
+   source/base
 
 .. toctree::
    :maxdepth: 2

@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<link rel="StyleSheet" type="text/css" href="style.css" />
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+<link rel="stylesheet" href="colorbox/colorbox.css" />
+<script src="colorbox/jquery.colorbox.js"></script>
+
+</head>
+<body id="body" >
+<h2 id="frame"></h2>
+<table>
+<tr>
+<td>
+<select name="image_select">
+    <option selected=""images/png/"" value="images/png/">PNG</option>
+    <option value="images/apertures/apertures_">APERTURES</option>
+</select>
+</td>
+<td>
+<input id="SHOW_SATS" type="checkbox" value="Show Sats Labels" name="SHOW_SATS" checked>Show Sats</input>
+<input id="SHOW_MPC" type="checkbox" value="Show know MPCs" name="SHOW_MPC" checked>Show know MPCs</input>
+<input id="SHOW_FASTMOVERS" type="checkbox" value="Show Fastmovers" name="SHOW_FASTMOVERS" checked>Show Fastmovers</input>
+<input id="SHOW_ASTEROID" type="checkbox" value="Show Slowmovers" name="SHOW_ASTEROID" checked>Show Slowmovers</input>
+<input id="SHOW_NGC" type="checkbox" value="Show NGC" name="SHOW_NGC" checked>Show NGC</input>
+</td>
+<td>
+<div id="speed"></div>
+</td>
+</tr>
+</table>
+<div id="imagename">Name</div>
+<a class='homer' href='colorbox/content/homer.jpg'>Homer</a>
+<div class="registra"></div>
+<div id="frame1">
+<image class="png" id="pngHide1" src=""></img>
+<image class="pngoverlay" id="png_mask1" src=""></img>
+<image class="pngoverlay" id="png_mpc_mask1" src=""></img>
+<image class="pngoverlay" id="png_fastmover_mask1" src=""></img>
+<image class="pngoverlay" id="png_ngc_mask1" src=""></img>
+<image class="pngoverlay" id="png_slowmover_mask1" src=""></img>
+</div>
+<div id="frame2">
+<image class="png" id="pngHide2" src=""></img>
+<image class="pngoverlay" id="png_mask2" src=""></img>
+<image class="pngoverlay" id="png_mpc_mask2" src=""></img>
+<image class="pngoverlay" id="png_fastmover_mask2" src=""></img>
+<image class="pngoverlay" id="png_ngc_mask2" src=""></img>
+<image class="pngoverlay" id="png_slowmover_mask2" src=""></img>
+</div>
+<div id="frame3">
+<image class="png" id="pngHide3" src=""></img>
+<image class="pngoverlay" id="png_mask3" src=""></img>
+<image class="pngoverlay" id="png_mpc_mask3" src=""></img>
+<image class="pngoverlay" id="png_fastmover_mask3" src=""></img>
+<image class="pngoverlay" id="png_ngc_mask3" src=""></img>
+<image class="pngoverlay" id="png_slowmover_mask3" src=""></img>
+</div>
+
+<div id="selected"></div>
+</body>
+<script>
+$(document).ready(function() {
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+frame=$.urlParam('frame')
+date=$.urlParam('date')
+$("#pngHide1").hide()
+$("#pngHide2").hide()
+$("#pngHide3").hide()
+$("#png_mask1").hide()
+$("#png_mask2").hide()
+$("#png_mask3").hide()
+$("#png_mpc_mask1").hide()
+$("#png_mpc_mask2").hide()
+$("#png_mpc_mask3").hide()
+$("#png_fastmover_mask1").hide()
+$("#png_fastmover_mask2").hide()
+$("#png_fastmover_mask3").hide()
+$("#png_slowmover_mask1").hide()
+$("#png_slowmover_mask2").hide()
+$("#png_slowmover_mask3").hide()
+$("#png_ngc_mask1").hide()
+$("#png_ngc_mask2").hide()
+$("#png_ngc_mask3").hide()
+
+
+
+$("#frame").text(frame)
+
+$(function() {
+    $("#speed").slider({  min: 200 ,max: 5000,value: 1000  });
+});
+
+function preload() {
+  for (i=1;i<4;i++) {
+  prefix=$("select[name='image_select']").children(':selected').val();
+  nextImage=date+"/"+prefix+frame+"-0"+i+".png";
+  nextImage_satmask=date+"/sats/withsats_mask/"+frame+"-0"+i+".png"
+  nextImage_mpcmask=date+"/mpc_mask/"+frame+"-0"+i+".png"
+  nextImage_fastmovermask=date+"/fastmover_mask/"+frame+"-0"+i+".png"
+  nextImage_slowmovermask=date+"/asteroid_mask/"+frame+"-0"+i+".png"
+  nextImage_ngcmask=date+"/ngc_mask/"+frame+"-0"+i+".png"
+  $("#pngHide"+String(i)).attr('src', nextImage);
+  $("#png_mask"+String(i)).attr('src', nextImage_satmask);
+  $("#png_mpc_mask"+String(i)).attr('src', nextImage_mpcmask);
+  $("#png_fastmover_mask"+String(i)).attr('src',   nextImage_fastmovermask);
+  $("#png_slowmover_mask"+String(i)).attr('src',   nextImage_slowmovermask);
+  $("#png_ngc_mask"+String(i)).attr('src',   nextImage_ngcmask);
+  };
+}
+
+$("select[name='image_select']").change(function() {
+  for (i=1;i<4;i++) {
+  prefix=$("select[name='image_select']").children(':selected').val();
+  nextImage=date+"/"+prefix+frame+"-0"+i+".png";
+  nextImage_satmask=date+"/sats/withsats_mask/"+frame+"-0"+i+".png"
+  nextImage_mpcmask=date+"/mpc_mask/"+frame+"-0"+i+".png"
+  nextImage_fastmovermask=date+"/fastmover_mask/"+frame+"-0"+i+".png"
+  nextImage_slowmovermask=date+"/asteroid_mask/"+frame+"-0"+i+".png"
+  nextImage_ngcmask=date+"/ngc_mask/"+frame+"-0"+i+".png"
+  $("#pngHide"+String(i)).attr('src', nextImage);
+  $("#png_mask"+String(i)).attr('src', nextImage_satmask);
+  $("#png_mpc_mask"+String(i)).attr('src', nextImage_mpcmask);
+  $("#png_fastmover_mask"+String(i)).attr('src',   nextImage_fastmovermask);
+  $("#png_slowmover_mask"+String(i)).attr('src',   nextImage_slowmovermask);
+  $("#png_ngc_mask"+String(i)).attr('src',   nextImage_ngcmask);
+  };
+
+});
+preload()
+  $.get( date+"/images/png/"+frame+".registra", function( data ) {
+    var dis_frame=data.split('\n')		
+   for (i=1;i<=3;i++) {
+	var dis=dis_frame[i-1].trim().split(' ')
+	$("#frame"+String(i)).css("position","absolute")
+	$("#frame"+String(i)).css({"left":20+Number(dis[1]),"top":50+Number(dis[2])})
+   }	
+  });
+
+
+   for (i=1;i<=3;i++) {
+	imagemap=date+"/asteroid_mask/"+frame+"-0"+i+".png.region"
+        $.get( imagemap, function( data ) {
+		$('body').append(data)
+        })
+	$("#png_slowmover_mask"+String(i)).attr('usemap',  "#"+ frame+"-0"+i+".png.region");
+   }	
+
+
+i=1
+var myAnim = setInterval(function(){
+  if (i<3) {
+	i=i+1	
+  } else {
+	i=1	
+  }	
+  prefix=$("select[name='image_select']").children(':selected').val();
+  nextImage=date+"/"+prefix+frame+"-0"+i+".png"
+  nextImage_satmask=date+"/sats/withsats_mask/"+frame+"-0"+i+".png"
+  $("#imagename").text(nextImage)	
+  $("#pngHide"+String(i)).show();
+  if ($("#SHOW_SATS").is(":checked")) {
+  	$("#png_mask"+String(i)).show();
+  }
+
+  if ($("#SHOW_MPC").is(":checked")) {
+  	$("#png_mpc_mask"+String(i)).show();
+  }
+
+  if ($("#SHOW_FASTMOVERS").is(":checked")) {
+  	$("#png_fastmover_mask"+String(i)).show();
+  }
+  if ($("#SHOW_ASTEROID").is(":checked")) {
+  	$("#png_slowmover_mask"+String(i)).show();
+  }
+  if ($("#SHOW_NGC").is(":checked")) {
+  	$("#png_ngc_mask"+String(i)).show();
+  }
+  if (i==1) {
+	k=3;
+  } else {
+	k=i-1;	
+  }
+  $("#pngHide"+String(k)).hide();
+  $("#png_mask"+String(k)).hide();
+  $("#png_mpc_mask"+String(k)).hide();
+  $("#png_fastmover_mask"+String(k)).hide();
+  $("#png_slowmover_mask"+String(k)).hide();
+  $("#png_ngc_mask"+String(k)).hide();
+  dummy()
+}, 1000);
+
+
+function dummy() {
+	//$('.asteroid_link ,.homer').colorbox({transition:"fade",innerWidth:'500px',innerHeight:'500px',scalePhotos:'true'});
+	$('.asteroid_link').colorbox({iframe:true, width:"600px", height:"710px"});
+}
+dummy()
+});
+</script>
+</html>

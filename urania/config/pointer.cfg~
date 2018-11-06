@@ -1,0 +1,34 @@
+[GENERAL]
+#base_dir=/home/nacho/TYCHO_SOFT/pointer
+base_dir=/home/lasagra/pointer
+jsonfile=%(base_dir)s/data.json
+log_dir=%(base_dir)s/log
+telescopes=CENTU1,CENTU2,CENTU3,TRACKER1
+check_every=10
+#LA SAGRA(J75) +37° 58' 57.92", -2° 33' 57.18,1460"
+code=J75
+lon=-2:33:52.2
+lat=37:58:58
+elev=1460
+
+
+[CENTU1]
+label=CENTURION 1
+url=http://192.168.1.111/imagenes/ultima.jpg
+solve_params=-D tmp/ -2 -p --overwrite -z 4 -y -g -l 60 -H 6 -u app
+
+[CENTU2]
+label=CENTURION 2
+#url=http://lasagra.belauba.com:11280/imagenes/ultima.jpg
+url=http://192.168.1.112/imagenes/ultima.jpg
+solve_params=-D tmp/ -2 -p --overwrite -z 4 -y -g -l 60 -H 6 -u app
+
+[CENTU3]
+label=CENTURION 3
+url=http://192.168.1.113/imagenes/ultima.jpg
+solve_params=-D tmp/ -2 -p --overwrite -z 4 -y -g -l 60 -H 6 -u app
+
+[TRACKER1]
+label=TRACKER 1
+url=http://192.168.1.131/imagenes/ultima.jpg
+solve_params=-D tmp/ -2 -p --overwrite -z 4 -y -g -l 60 -H 6 -u app

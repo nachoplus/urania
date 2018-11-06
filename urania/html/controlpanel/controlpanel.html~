@@ -1,0 +1,484 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<link rel="StyleSheet" type="text/css" href="style.css" />
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+</head>
+<body id="body" >
+<div class="title"><h2>LA SAGRA FASTMOVERS: CONTROL PANEL</h2></div>
+<table class="menu">
+<tr>
+<td class="menu"><a href="../../blindsolver">BlindSolver</a></td>
+<td class="menu"><a class='allimages' href='javascript:void(0)'>Show All Images</a></td>
+<td class="menu"><a href='http://oiswww.eumetsat.org/IPPS/html/MSG/IMAGERY/IR039/BW/WESTERNEUROPE/index.htm'>Eumetsat</a></td>
+<td class="menu"><a href='http://www.sat24.com/?ir=true'>SAT24</a></td>
+</tr>
+<tr>
+<td class="menu"><a class='slowmovers' href='javascript:void(0)'>SlowMovers</a></td>
+<td class="menu"><a class='slowmoverscentu1' href='javascript:void(0)'>SlowCENTU1</a></td>
+<td class="menu"><a class='slowmoverscentu2' href='javascript:void(0)'>SlowCENTU2</a></td>
+<td class="menu"><a class='slowmoverscentu3' href='javascript:void(0)'>SlowCENTU3</a></td>
+</tr>
+</table>
+<table>
+<tr>
+<td>DATE:<input type='text' id="date"></td>
+<td><input id="ENABLE_ALARM" type="checkbox" value="ENABLE_ALARM" name="ENABLE_ALARM" checked>Alarms</input></td>
+<td><button type="button" onclick="ack_alarm()">Alarms Acknowledge</button></td>
+</tr>
+</table>
+<audio id="buzzer" src="robots.wav" type="audio/wav">Your browser does not support the &#60;audio&#62; element.</audio>
+<table class="container">
+
+<tr>
+<td>
+<table id="progress">
+<tr  class="tableheader"><th colspan=10 id="reloj"></th></tr>
+<tr class="tableheader"><th rowspan=3>Telescope</th><th colspan=3 >Preprocesor</th><th colspan=3 >Slow Movers</th><th colspan=3 >Fast Movers</th></tr>
+<tr class="tableheader"><th colspan=3 id="preprocesorState"></th><th colspan=3 id="slowmoversState"></th><th colspan=3 id="fastmoverState"></th></tr>
+<tr class="tableheader"><th>Waiting</th><th>Done</th><th>Total</th><th>Waiting</th><th>Done</th><th>Total</th><th>Waiting</th><th>Done</th><th>Total</th></tr>
+<tr>
+<td>CENTURION1</td>
+<td id="centu1preprocesswait">0</td><td id="centu1preprocessdone">0</td><td id="centu1preprocesstotal">0</td>
+<td id="centu1slowmoverswait">0</td><td id="centu1slowmoversdone">0</td><td id="centu1slowmoverstotal">0</td>
+<td id="centu1fastmoverwait">0</td><td id="centu1fastmoverdone">0</td><td id="centu1fastmovertotal">0</td>
+</tr>
+<tr>
+<td>CENTURION2</td>
+<td id="centu2preprocesswait">0</td><td id="centu2preprocessdone">0</td><td id="centu2preprocesstotal">0</td>
+<td id="centu2slowmoverswait">0</td><td id="centu2slowmoversdone">0</td><td id="centu2slowmoverstotal">0</td>
+<td id="centu2fastmoverwait">0</td><td id="centu2fastmoverdone">0</td><td id="centu2fastmovertotal">0</td>
+</tr>
+<tr>
+<td>CENTURION3</td>
+<td id="centu3preprocesswait">0</td><td id="centu3preprocessdone">0</td><td id="centu3preprocesstotal">0</td>
+<td id="centu3slowmoverswait">0</td><td id="centu3slowmoversdone">0</td><td id="centu3slowmoverstotal">0</td>
+<td id="centu3fastmoverwait">0</td><td id="centu3fastmoverdone">0</td><td id="centu3fastmovertotal">0</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td>
+<table id="movers">
+<tr class="tableheader"><th colspan=6>FASTMOVERS</th></tr><tr class="tableheader"><th>DETAILS</th><th>CENTURION</th><th>DATE</th><th>SATs</th><th>MOVERS</th><th>Blinker</th></tr>
+</table>
+</td>
+</tr>
+<tr>
+<td >
+<table id="satellites">
+<tr class="tableheader"><th colspan=5>SATELLITES NOT DETECTED</th></tr><tr class="tableheader"><th>CENTURION</th><th>DATE</th><th>SATs</th><th>MOVERS</th><th>Blinker</th></tr>
+</table>
+</td>
+</tr>
+</table>
+<div class="output">
+</div>
+
+</body>
+<script>
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+var date=$.urlParam('date')
+  $(function() {
+    $( "#date" ).datepicker();
+  });
+
+  $( "#date").datepicker( "option", "firstDay", 1 );
+  $( "#date" ).datepicker({ dateFormat: "y-mm-dd" });
+  
+
+  
+if (date==null) {
+	var day=new Date();
+	day.setHours(day.getHours()-18)
+	//date=day.getFullYear()+"-"+String('0'+Number(day.getMonth())+1).slice(-2)+"-"+('0'+day.getDate()).slice(-2)
+	date=day.getFullYear()+"-"+('0'+Number(Number(day.getMonth())+1)).slice(-2)+"-"+('0'+day.getDate()).slice(-2)
+	date=date.substring(2,10)
+	//date=day
+	window.open(window.location.pathname+"?date="+date,"_self")
+	//$("#date").text(date)
+}
+
+//$("#date").datepicker( "setDate", date );
+$("#date").val(date)
+
+$("#date").datepicker().change(function() {
+	date=$("#date").val()	
+	$(".entry").remove()
+	window.open(window.location.pathname+"?date="+date,"_self")
+	updatedata()
+}
+);
+
+$('.allimages').click(function(){
+	date=$("#date").val()	
+	window.open("images_all.html?date="+date,"_self")
+});
+
+$('.slowmovers').click(function(){
+	date=$("#date").val()	
+	window.open("slowmovers.html?date="+date,"_self")
+});
+$('.slowmoverscentu1').click(function(){
+	date=$("#date").val()	
+	window.open("slowmovers.html?date="+date+"&telescope=CENTU1","_blank")
+});
+$('.slowmoverscentu2').click(function(){
+	date=$("#date").val()	
+	window.open("slowmovers.html?date="+date+"&telescope=CENTU2","_blank")
+});
+$('.slowmoverscentu3').click(function(){
+	date=$("#date").val()	
+	window.open("slowmovers.html?date="+date+"&telescope=CENTU3","_blank")
+});
+var alarm_on=0;
+
+function ack_alarm() {
+	alarm_on=0
+}
+
+
+	function startTime()
+	{
+	var today=new Date();
+	var h=today.getHours();
+	var m=today.getMinutes();
+	var s=today.getSeconds();
+	// add a zero in front of numbers<10
+	m=checkTime(m);
+	s=checkTime(s);
+	//$("#reloj").text(h+":"+m+":"+s);
+	$("#reloj").text(today);
+	}
+	
+	function checkTime(i)
+	{
+	if (i<10)
+	  {
+	  i="0" + i;
+	  }
+	return i;
+	}
+
+    setInterval( function(){ updatedata();}, 10000);
+    $("#text").hide()
+    function updatedata(){
+	updatepreprocesor();
+    	updateslowmovers();
+    	updatefastmovers();
+	startTime();
+        buzzer();
+    }
+
+    function buzzer(){
+	if (alarm_on==1) {
+		$("#buzzer").get(0).play();
+	}	
+    }
+
+    function updatepreprocesor(){
+    $.ajax({
+    // the URL for the request
+    url: date+"/stat_preprocesor.json",
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {	
+	total1=Number(data.DONE[0])+Number(data.QUEUES[0])
+	total2=Number(data.DONE[1])+Number(data.QUEUES[1])
+	total3=Number(data.DONE[2])+Number(data.QUEUES[2])
+	$("#centu1preprocesswait").text(data.QUEUES[0])
+	$("#centu1preprocessdone").text(data.DONE[0])
+	$("#centu1preprocesstotal").text(total1)
+	$("#centu2preprocesswait").text(data.QUEUES[1])
+	$("#centu2preprocessdone").text(data.DONE[1])
+	$("#centu2preprocesstotal").text(total2)
+	$("#centu3preprocesswait").text(data.QUEUES[2])
+	$("#centu3preprocessdone").text(data.DONE[2])
+	$("#centu3preprocesstotal").text(total3)
+		if (total1==Number(data.DONE[0])) {
+		$("#centu1preprocesstotal").css("color","#0a0")
+		} else {
+		$("#centu1preprocesstotal").css("color","#a00")
+		}
+		if (total2==Number(data.DONE[1])) {
+		$("#centu2preprocesstotal").css("color","#0a0")
+		} else {
+		$("#centu2preprocesstotal").css("color","#a00")
+		}
+		if (total3==Number(data.DONE[2])) {
+		$("#centu3preprocesstotal").css("color","#0a0")
+		} else {
+		$("#centu3preprocesstotal").css("color","#a00")
+		}
+	$("#preprocesorState").text(data.DATE)
+	var cachos=data.DATE.split('/',3)
+	resto=cachos[2].split(' ')
+	var dateTXT=resto[0]+"/"+cachos[1]+"/"+cachos[0]
+	var d1 = new Date(dateTXT+" "+resto[1])
+	now=new Date($("#reloj").text())
+	var diff=(now.getTime()-d1.getTime())/1000
+	$("#preprocesorState").css('background-color',"#0a0")
+	if (diff>180) {
+		$("#preprocesorState").css('background-color',"#aa0")
+	}
+	if (diff>600) {
+		$("#preprocesorState").css('background-color',"#a00")
+	}
+
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+ 
+    }
+    });
+    };
+
+
+    function updateslowmovers(){
+    $.ajax({
+    // the URL for the request
+    url: date+"/stat_slowmover.json",
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {	
+	total1=Number(data.DONE[0])+Number(data.QUEUES[0])
+	total2=Number(data.DONE[1])+Number(data.QUEUES[1])
+	total3=Number(data.DONE[2])+Number(data.QUEUES[2])
+	$("#centu1slowmoverswait").text(data.QUEUES[0])
+	$("#centu1slowmoversdone").text(data.DONE[0])
+	$("#centu1slowmoverstotal").text(total1)
+	$("#centu2slowmoverswait").text(data.QUEUES[1])
+	$("#centu2slowmoversdone").text(data.DONE[1])
+	$("#centu2slowmoverstotal").text(total2)
+	$("#centu3slowmoverswait").text(data.QUEUES[2])
+	$("#centu3slowmoversdone").text(data.DONE[2])
+	$("#centu3slowmoverstotal").text(total3)
+		if (total1==Number(data.DONE[0])) {
+		$("#centu1slowmoverstotal").css("color","#0a0")
+		} else {
+		$("#centu1slowmoverstotal").css("color","#a00")
+		}
+		if (total2==Number(data.DONE[1])) {
+		$("#centu2slowmoverstotal").css("color","#0a0")
+		} else {
+		$("#centu2slowmoverstotal").css("color","#a00")
+		}
+		if (total3==Number(data.DONE[2])) {
+		$("#centu3slowmoverstotal").css("color","#0a0")
+		} else {
+		$("#centu3slowmoverstotal").css("color","#a00")
+		}
+	$("#slowmoversState").text(data.DATE)
+	var cachos=data.DATE.split('/',3)
+	resto=cachos[2].split(' ')
+	var dateTXT=resto[0]+"/"+cachos[1]+"/"+cachos[0]
+	var d1 = new Date(dateTXT+" "+resto[1])
+	now=new Date($("#reloj").text())
+	var diff=(now.getTime()-d1.getTime())/1000
+	$("#slowmoversState").css('background-color',"#0a0")
+	if (diff>180) {
+		$("#slowmoversState").css('background-color',"#aa0")
+	}
+	if (diff>600) {
+		$("#slowmoversState").css('background-color',"#a00")
+	}
+
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+ 
+    }
+    });
+    };
+
+
+
+    function updatefastmovers(){
+    $.ajax({
+    // the URL for the request
+    url: date+"/stat_fastmover.json",
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {
+		total1=Number(data.DONE[0])+Number(data.QUEUES[0])
+		total2=Number(data.DONE[1])+Number(data.QUEUES[1])
+		total3=Number(data.DONE[2])+Number(data.QUEUES[2])
+		$("#centu1fastmoverwait").text(data.QUEUES[0])
+		$("#centu1fastmoverdone").text(data.DONE[0])
+		$("#centu1fastmovertotal").text(total1)
+		$("#centu2fastmoverwait").text(data.QUEUES[1])
+		$("#centu2fastmoverdone").text(data.DONE[1])
+		$("#centu2fastmovertotal").text(total2)
+		$("#centu3fastmoverwait").text(data.QUEUES[2])
+		$("#centu3fastmoverdone").text(data.DONE[2])
+		$("#centu3fastmovertotal").text(total3)	
+		$("#fastmoverState").text(data.DATE)
+		var cachos=data.DATE.split('/',3)
+		resto=cachos[2].split(' ')
+		var dateTXT=resto[0]+"/"+cachos[1]+"/"+cachos[0]
+		var d2 = new Date(dateTXT+" "+resto[1])
+		now=new Date($("#reloj").text())
+		var diff=(now.getTime()-d2.getTime())/1000
+		$("#fastmoverState").css('background-color',"#0a0")
+		if (diff>180) {
+			$("#fastmoverState").css('background-color',"#aa0")
+		}
+		if (diff>600) {
+			$("#fastmoverState").css('background-color',"#a00")
+		}
+
+		if (total1==Number(data.DONE[0])) {
+		$("#centu1fastmovertotal").css("color","#0a0")
+		} else {
+		$("#centu1fastmovertotal").css("color","#a00")
+		}
+		if (total2==Number(data.DONE[1])) {
+		$("#centu2fastmovertotal").css("color","#0a0")
+		} else {
+		$("#centu2fastmovertotal").css("color","#a00")
+		}
+		if (total3==Number(data.DONE[2])) {
+		$("#centu3fastmovertotal").css("color","#0a0")
+		} else {
+		$("#centu3fastmovertotal").css("color","#a00")
+		}
+		frames=data.FRAMES.sort(function(a, b){
+				var nameA=a.FRAME.toLowerCase(), nameB=b.FRAME.toLowerCase()
+				if (nameA < nameB) //sort string ascending
+				  return -1 
+				if (nameA > nameB)
+				  return 1				
+				 return 0 //default return value (no sorting)
+				})
+		for (frame in frames) {
+		response=frames[frame]
+		if (typeof response.LAUNCH_RESPONSE.movers != 'undefined') {
+		   if (Number(response.LAUNCH_RESPONSE.movers)!=0) {
+			texto="<tr class='entry' id='"+response.FRAME.replace('+','_')+"'><td ><a class='details' href='"+date+"/"+response.FRAME+"/"+response.FRAME+".html'>"+response.FRAME+"</td>"
+			a=response.LAUNCH_RESPONSE
+			texto=texto+"<td>"+String(Number(response.CENTU)+1)+"</td>"
+			texto=texto+"<td>"+a.date0+"</td>"
+			texto=texto+"<td>"+a.sat_match_number+"</td>"
+			texto=texto+"<td>"+a.movers+"</td>"
+			texto=texto+"<td><a href=blinker.html?frame="+response.FRAME+"&date="+date+">"+response.FRAME+"</td>"
+
+
+			if ($("#"+response.FRAME.replace('+','_')).length){
+			   	//Horray you have the row you specified.	
+				//console.log(response.FRAME+" EXIST")
+			}
+			else{
+				//what you should do when the row doesn't exist
+				$("#movers" ).append(texto);
+				if ($("#ENABLE_ALARM").is(":checked")) {
+					alarm_on=1;
+				}
+			}	
+		    }
+		}
+		};
+		for (frame in frames) {
+		response=frames[frame]
+		if (typeof response.LAUNCH_RESPONSE.sat_match_number != 'undefined') {
+		if (Number(response.LAUNCH_RESPONSE.sat_match_number)!=0) {
+			texto="<tr class='entry' id='"+response.FRAME.replace('+','_')+"'>"
+			a=response.LAUNCH_RESPONSE
+			texto=texto+"<td>"+String(Number(response.CENTU)+1)+"</td>"
+			texto=texto+"<td>"+a.date0+"</td>"
+			texto=texto+"<td>"+a.sat_match_number+"</td>"
+			texto=texto+"<td>"+a.movers+"</td>"
+			texto=texto+"<td><a href=blinker.html?frame="+response.FRAME+"&date="+date+">"+response.FRAME+"</td>"
+
+
+			if ($("#"+response.FRAME.replace('+','_')).length){
+			   	//Horray you have the row you specified.
+				//console.log(response.FRAME)
+			}
+			else{
+				//what you should do when the row doesn't exist
+				$("#satellites" ).append(texto);
+			}
+		}
+		}
+		};
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+		//Desactivado por el problema con el :visited
+ 		//buzzer();
+    }
+    });
+    };
+    updatedata();
+</script>
+</html>

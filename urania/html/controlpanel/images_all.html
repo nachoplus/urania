@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<link rel="StyleSheet" type="text/css" href="style.css" />
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+</head>
+<body id="body" >
+
+<div class="title"><h2>LA SAGRA FASTMOVERS: ALL IMAGES</h2></div>
+<table class="menu">
+<tr>
+<td class="menu"><a href="../../blindsolver">BlindSolver</a></td>
+<td class="menu"><a class='controlpanel' href='javascript:void(0)'>Control Panel</a></td>
+<td class="menu"><a href='http://oiswww.eumetsat.org/IPPS/html/MSG/IMAGERY/IR039/BW/WESTERNEUROPE/index.htm'>Eumetsat</a></td>
+<td class="menu"><a href='http://www.sat24.com/?ir=true'>SAT24</a></td>
+</tr>
+</table>
+
+DATE:<input type='text' id="date">
+<table class="container">
+<tr>
+<td >
+<table id="satellites">
+<tr class="tableheader"><th colspan=6>ALL IMAGES</th></tr><tr class="tableheader"><th>CENTURION</th><th>END TIME</th><th>STATUS</th><th>ETA</th><th>Blinker</th></tr>
+</table>
+</td>
+</tr>
+</table>
+<div class="output">
+</div>
+
+</body>
+<script>
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+var date=$.urlParam('date')
+  $(function() {
+    $( "#date" ).datepicker();
+  });
+
+  $( "#date").datepicker( "option", "firstDay", 1 );
+  $( "#date" ).datepicker({ dateFormat: "y-mm-dd" });
+  
+$('.controlpanel').click(function(){
+	date=$("#date").val()	
+	window.open("controlpanel.html?date="+date,"_self")
+});
+  
+if (date==null) {
+	var day=new Date();
+	day.setHours(day.getHours()-18)
+	date=day.getFullYear()+"-"+('0'+Number(Number(day.getMonth())+1)).slice(-2)+"-"+('0'+day.getDate()).slice(-2)
+	date=date.substring(2,10)
+	//date=day
+	window.open(window.location.pathname+"?date="+date,"_self")
+	//$("#date").text(date)
+}
+
+//$("#date").datepicker( "setDate", date );
+$("#date").val(date)
+
+$("#date").datepicker().change(function() {
+	date=$("#date").val()	
+	$(".entry").remove()
+	window.open(window.location.pathname+"?date="+date,"_self")
+	updatedata()
+}
+);
+
+
+
+
+
+
+	function startTime()
+	{
+	var today=new Date();
+	var h=today.getHours();
+	var m=today.getMinutes();
+	var s=today.getSeconds();
+	// add a zero in front of numbers<10
+	m=checkTime(m);
+	s=checkTime(s);
+	//$("#reloj").text(h+":"+m+":"+s);
+	$("#reloj").text(today);
+	}
+	
+	function checkTime(i)
+	{
+	if (i<10)
+	  {
+	  i="0" + i;
+	  }
+	return i;
+	}
+
+    setInterval( function(){ updatedata();}, 10000);
+    $("#text").hide()
+    function updatedata(){
+    	updatefastmovers();
+	startTime();
+        //buzzer();
+    }
+
+
+
+    function updatefastmovers(){
+    $.ajax({
+    // the URL for the request
+    url: date+"/stat_preprocesor.json",
+ 
+    // the data to send (will be converted to a query string)
+    data: {
+
+    },
+	 
+    // whether this is a POST or GET request
+    type: "GET",
+ 
+    // the type of data we expect back
+    dataType : "json",
+ 
+    // code to run if the request succeeds;
+    // the response is passed to the function
+    success: function( data ) {
+		frames=data.FRAMES.sort(function(a, b){
+				var nameA=a.FRAME.toLowerCase(), nameB=b.FRAME.toLowerCase()
+				if (nameA < nameB) //sort string ascending
+				  return -1 
+				if (nameA > nameB)
+				  return 1				
+				 return 0 //default return value (no sorting)
+				})
+		for (frame in frames) {
+		response=frames[frame]
+			texto="<tr class='entry' id='"+response.FRAME.replace('+','_')+"'>"
+			texto=texto+"<td>"+String(Number(response.CENTU)+1)+"</td>"
+			texto=texto+"<td>"+response.END_TIME+"</td>"
+			texto=texto+"<td>"+response.LAUNCH_RESPONSE+"</td>"
+			texto=texto+"<td>"+response.ETA+"</td>"
+			texto=texto+"<td><a href=blinker.html?frame="+response.FRAME+"&date="+date+">"+response.FRAME+"</td>"
+
+
+			if ($("#"+response.FRAME.replace('+','_')).length){
+			   	//Horray you have the row you specified.	
+				//console.log(response.FRAME+" EXIST")
+			} else {
+				//what you should do when the row doesn't exist
+				$("#satellites" ).append(texto);
+			}
+			
+	
+		  
+		}
+
+    },
+ 
+    // code to run if the request fails; the raw request and
+    // status codes are passed to the function
+    error: function( xhr, status ) {
+        //alert( "Sorry, there was a problem!" );
+    },
+ 
+    // code to run regardless of success or failure
+    complete: function( xhr, status ) {
+		//Desactivado por el problema con el :visited
+ 		//buzzer();
+    }
+    });
+
+    };
+    updatedata();
+</script>
+</html>

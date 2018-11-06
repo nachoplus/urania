@@ -139,9 +139,9 @@ def describe(module):
    """ Describe the module object passed as argument
    including its classes and functions """
    
-   #wi('[Module: %s]\n' % module.__name__)
+   wi('[Module: %s]\n' % module.__name__)
 
-   #indent()
+   indent()
 
    count = 0
    

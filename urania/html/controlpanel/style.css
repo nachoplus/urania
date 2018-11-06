@@ -1,0 +1,140 @@
+
+body 
+{
+color:#aaaaaa;
+background: #222222; 
+}    
+
+
+hr
+{
+color: #000;
+background-color: #f00;
+width: 40%;
+height: 1px;
+}
+
+.ui-datepicker *{
+background-color: #222;
+color: #0044cc;
+}
+
+a {
+color: #0044cc; 
+font-size:14px;
+text-decoration: none;
+font-weight:bold;
+}
+
+a:hover {
+	color: #aa44cc;
+	font-size:14px;
+	text-decoration: none;
+	font-weight:bold;
+}
+
+a:visited {
+color: #555500; 
+font-size:14px;
+text-decoration: none;
+font-weight:bold;
+}
+
+input[type="text"] {
+border: none;
+background: transparent;
+color:#0044cc;
+font-size:18px;
+}
+
+.title {
+	text-align:center
+	font-size:16px;
+	color:#AA0000;
+}
+
+.menu td {
+	border:1px solid #22222;
+	padding:5px;
+}
+
+.menu a {
+	border:0px solid #aaaaaa;
+	color: #0044cc;
+	font-size:18px;
+}
+
+.menu a:hover {
+	color: #aa44cc;
+	font-size:18px;
+}
+
+.container *{
+	margin:10px;padding:5px;
+	border:0px solid #aa0000;
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+.tableheader *{
+	border:3px solid #aaaaaa;
+	text-align:center;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+#preprocesorState,#slowmoversState,#fastmoverState {
+	color:#114444;
+}
+
+table#progress  td,th{
+	margin:20px;padding:5px;
+	width:250;
+	vertical-align:middle;
+	text-align:center;
+	border:1px solid #aaaaaa;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:normal;
+}
+
+
+table#movers td ,table#satellites  td{
+	margin:20px;padding:5px;
+	width:250;
+	vertical-align:middle;
+	border:1px solid #aaaaaa;
+	font-size:14px;
+	font-family:Arial;
+	font-weight:normal;
+}
+
+
+
+
+.png {
+		border:0px solid #aaaaaa;
+		position: absolute;
+		left: 50px;
+		top: 120px;
+		z-index: 1;
+}
+
+.pngoverlay {
+		border:0px solid #aaaaaa;
+		position: absolute;
+		left: 50px;
+		top: 120px;
+		z-index: 2;
+}
+
+
+.passtime {
+	color: #555555;
+}
+
+
+
+

@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+
+<link rel="StyleSheet" type="text/css" href="style.css" />
+<script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+</head>
+<body id="body" >
+<div id="test"></div>
+<div class="title"><h2>LA SAGRA LINEAR ORBIT PROPAGATOR</h2></div>
+<table>
+<tr class="tableheader"><th> ID </th><th>SPEED (arcsec/min) </th><th> PA </th></tr>
+<tr>
+<td>
+<div id="ID"></div>
+</td>
+<td>
+<div id="SPEED"></div>
+</td>
+<td>
+<div id="PA" ></div>
+</td>
+</tr>
+</table>
+<hr>
+<table id='propagator'>
+<tr class="tableheader"><th>TIME OFFSET (min)</th><th>DATE</th><th>MJD</th><th>RA</th><th>DEC</th></tr>
+</table>
+</body>
+<script>
+$( document ).ready(function() {
+  // Handler for .ready() called.
+$.urlParam = function(name){
+    var results = new RegExp('[\\?&]' + name + '=([^&#]*)').exec(window.location.href);
+    if (results==null){
+       return null;
+    }
+    else{
+       return results[1] || 0;
+    }
+}
+
+speed=$.urlParam('speed')
+pa=$.urlParam('pa')
+ra=$.urlParam('ra')
+dec=$.urlParam('dec')
+date=$.urlParam('date')
+id=$.urlParam('id')
+
+var MJD_UNIX_EPOCH = 40587.0
+var MILLIS_PER_DAY = 1000 * 60 * 60 * 24
+var now = new Date().getTime();
+var nowMJD= now/MILLIS_PER_DAY+MJD_UNIX_EPOCH
+var dateObs= new Date((date-MJD_UNIX_EPOCH)*MILLIS_PER_DAY)
+
+
+
+
+
+//Adapted form http://www.movable-type.co.uk/scripts/latlong.html
+//lat,lon,pa,dis in radians
+function newPosition(lat1,lon1,pa,dis) {
+    var lat2 = Math.asin( Math.sin(lat1)*Math.cos(dis) + 
+              Math.cos(lat1)*Math.sin(dis)*Math.cos(pa) );
+    var lon2 = lon1 + Math.atan2(Math.sin(pa)*Math.sin(dis)*Math.cos(lat1), 
+                     Math.cos(dis)-Math.sin(lat1)*Math.sin(lat2));
+    lon2 = (lon2+2*Math.PI) % (2*Math.PI);  // normalise to 0..+360º
+    var obj = {
+        lat1:  lat1,
+        lon1:  lon1,
+	pa:      pa,
+	dis:    dis,
+        lat2:  lat2,
+        lon2:  lon2
+    };
+    return obj;
+}
+
+//Make the apropiate unit change and call newPosition
+//deltaTime in seconds
+function adaptor(deltaTime) {
+	var PI=Math.PI
+	_ra=ra*PI/180.
+	_dec=dec*PI/180.
+	_pa=pa*PI/180.
+	_speed=speed*PI/(180*3600)
+	_dis=_speed*(deltaTime/60.)
+        var result=new newPosition(_dec,_ra,_pa,_dis)
+	lat=result.lat2*180/PI
+	lon=result.lon2*180/PI	
+	newMJD=Number(date)+deltaTime/(3600*24)
+	if (newMJD<=nowMJD) {
+		texto="<tr class='passtime'>"
+	} else {
+		texto="<tr>"
+        }
+	var newDate= new Date((newMJD-MJD_UNIX_EPOCH)*MILLIS_PER_DAY)
+	texto=texto+"<td>"+deltaTime/60.+"</td><td>"+newDate.toISOString()+"</td><td>"+
+		Math.round(newMJD*100000)/100000+"</td><td>"+toHMS(lon)+"</td><td>"+toDMS(lat)+"</td></tr>"
+	$("#propagator" ).append(texto);
+	//$("#RESULT").text(toHMS(lon)+ " / "+toDMS(lat))
+	//$("#RESULT").text(lon+ " / "+lat)
+}
+
+toHMS = function(deg, format, dp) {
+	return toDMS(deg/15.,'dms',1)
+}
+
+toDMS = function(deg, format, dp) {
+  if (typeof deg == 'object') throw new TypeError('Geo.toDMS - deg is [DOM?] object');
+  if (isNaN(deg)) return null;  // give up here if we can't make a number from deg
+  
+    // default values
+  if (typeof format == 'undefined') format = 'dms';
+  if (typeof dp == 'undefined') {
+    switch (format) {
+      case 'd': dp = 4; break;
+      case 'dm': dp = 2; break;
+      case 'dms': dp = 0; break;
+      default: format = 'dms'; dp = 0;  // be forgiving on invalid format
+    }
+  }
+  
+  if (deg >=0) {
+   sign='';
+  } else {
+   sign='-';
+  }
+
+  deg = Math.abs(deg);  // (unsigned result ready for appending compass dir'n)
+
+  
+  switch (format) {
+    case 'd':
+      d = deg.toFixed(dp);     // round degrees
+      //if (d<100) d = '0' + d;  // pad with leading zeros
+      if (d<10) d = '0' + d;
+      dms = d + '\u00B0';      // add º symbol
+      break;
+    case 'dm':
+      var min = (deg*60).toFixed(dp);  // convert degrees to minutes & round
+      var d = Math.floor(min / 60);    // get component deg/min
+      var m = (min % 60).toFixed(dp);  // pad with trailing zeros
+      //if (d<100) d = '0' + d;          // pad with leading zeros
+      if (d<10) d = '0' + d;
+      if (m<10) m = '0' + m;
+      dms = d + '\u00B0' + m + '\u2032';  // add º, ' symbols
+      break;
+    case 'dms':
+      var sec = (deg*3600).toFixed(dp);  // convert degrees to seconds & round
+      var d = Math.floor(sec / 3600);    // get component deg/min/sec
+      var m = Math.floor(sec/60) % 60;
+      var s = (sec % 60).toFixed(dp);    // pad with trailing zeros
+      //if (d<100) d = '0' + d;            // pad with leading zeros
+      if (d<10) d = '0' + d;
+      if (m<10) m = '0' + m;
+      if (s<10) s = '0' + s;
+      dms = sign + d + ':' + m + ':' + s + '';  // add º, ', " symbols
+      break;
+  }
+  
+  return dms;
+}
+
+
+$("#test").text(nowMJD)
+texto="<tr><td>0</td><td>"+dateObs.toISOString()+"</td><td>"+Math.round(Number(date)*100000)/100000+"</td><td>"+toHMS(ra)+"</td><td>"+toDMS(dec)+"</td></tr>"
+$("#propagator" ).append(texto);
+
+
+
+for (i=1;i<=300;i++){
+	adaptor(60*i);
+}
+
+$("#ID").text(id)
+$("#SPEED").text(Math.round(speed*10)/10)
+$("#PA").text(Math.round(pa*10)/10)
+});
+</script>
+</html>
