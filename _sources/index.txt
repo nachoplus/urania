@@ -16,7 +16,7 @@ Technical information
 .. toctree::
    :maxdepth: 1
 
-   source/cmd_astroimage.rst
+   source/launcher.rst
 
 .. toctree::
    :maxdepth: 2
