@@ -16,7 +16,7 @@ Technical information
 .. toctree::
    :maxdepth: 1
 
-   source/launcher.rst
+   source/base
 
 .. toctree::
    :maxdepth: 2
