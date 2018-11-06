@@ -1,7 +1,7 @@
 .. URANIA documentation master file.
 
 
-.. figure:: ./images/urania.jpeg
+.. image:: ./images/urania.jpeg
     :width: 400px
     :align: center
     :height: 400px
