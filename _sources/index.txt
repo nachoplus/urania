@@ -1,11 +1,12 @@
 .. URANIA documentation master file.
 
 
-.. image:: ./images/urania.jpeg
+.. figure:: ./images/urania.jpeg
     :width: 400px
     :align: center
     :height: 400px
     :alt: URANIA
+    :caption: The muse of astronomy
 
 .. include:: ../README.rst
 
