@@ -2,9 +2,9 @@
 
 
 .. figure:: ./images/urania.jpeg
-    :width: 400px
+    :width: 200px
     :align: center
-    :height: 400px
+    :height: 200px
     :alt: URANIA
 
     The muse of astronomy
@@ -18,20 +18,6 @@ Technical information
 
    source/base
 
-.. toctree::
-   :maxdepth: 2
-
-   source/nodes
-
-.. toctree::
-   :maxdepth: 2
-
-   source/drivers
-
-.. toctree::
-   :maxdepth: 3
-
-   source/api
 
 
 
